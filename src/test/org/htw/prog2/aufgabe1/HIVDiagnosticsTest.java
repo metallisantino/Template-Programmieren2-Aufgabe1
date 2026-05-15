@@ -7,9 +7,22 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class HIVDiagnosticsTest {
 
+    /**
+     * Apache Commons CLI: wir müssen das Parsen nicht selbst programmieren. wir sagen der Bibliothek nur:
+     * 1. welche optionen es gibt (-m, -d, -r, -p)
+     * 2. ob sie Pflicht sind (alle 4 ja!)
+     * 3. ob sie einen Wert haben (ja z.B. -m data/HIVMutationPatterns.csv)
+     * und die Bibliothek macht den Rest
+     *
+     * -m < Mutation file
+     * -d < Drug name
+     * -r < Reference sequence
+     * -p < Patient sequences
+     */
+
     @Test
     void parseOptions_requiredArguments() {
-        assertNull(HIVDiagnostics.parseOptions(new String[] {}));
+        assertNull(HIVDiagnostics.parseOptions(new String[] {})); // wenn keine Argumente übergeben werden > null zurückgeben
         assertNull(HIVDiagnostics.parseOptions(
                 "-m data/HIVMutationPatterns.csv -r data/protease_reference.fasta".split(" ")));
         assertNull(HIVDiagnostics.parseOptions(
@@ -27,8 +40,10 @@ class HIVDiagnosticsTest {
                         split(" ")));
         assertNotNull(HIVDiagnostics.parseOptions(
                 "-m data/HIVMutationPatterns.csv -p data/protease_sequences.fasta -r data/protease_reference.fasta -d ProteaseInhibitor ".
-                        split(" ")));
+                        split(" "))); // nur wenn alle vier Argumente da sind -> nicht null zurückgeben
     }
+
+
 
     @Test
     void parseOptions_argumentValues() {
