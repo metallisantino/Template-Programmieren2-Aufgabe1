@@ -1,6 +1,9 @@
 package org.htw.prog2.aufgabe1;
 import org.apache.commons.cli.*;
 
+import java.io.File;
+import java.util.LinkedList;
+
 public class HIVDiagnostics {
 
     /**
@@ -14,36 +17,41 @@ public class HIVDiagnostics {
      */
 
     public static CommandLine parseOptions(String[] args) {
-        // 1. Optionen definieren
-        Options options = new Options(); // leere "liste" von Optionen
-        // options.addRequiredOption(Kurzform, Langform, hat Wert?, Beschreibung)
-        options.addRequiredOption("m", "mutationfiles", true, "Pfad zu CSV-Datei mit Mutationspattern" );
-        options.addRequiredOption("d", "drugnames", true, "Name des Medikaments" );
-        options.addRequiredOption("r", "references", true, "Pfad zu FASTA-Datei mit der Referenzsequenz" );
-        options.addRequiredOption("p", "patientseqs", true, "Pfad zu FASTA-Datei mit Patientensequenzen" );
-
-        // 2. Parser und HelpFormatter
-        CommandLineParser parser = new DefaultParser(); // das Werkzeug das die Argumente liest
-        HelpFormatter formatter = new HelpFormatter(); // gibt eine Hilfsmeldung aus wenn etwas fehlt
-
-        /**
-         * 3. Parsen versuchen
-         * parser.parse() kann einen ParseException Fehler werfen wenn:
-         * a. eine Pflicht-Option fehlt (z.B. -m nicht angegeben)
-         * b. eine unbekannte Option angegeben wird
-         *
-         * also: versuche die Argumente zu parsen. Falls eine Pflicht-Option fehlt > drucke die Hilfe aus > gib null zurück
-         */
-
+        Options options = new Options();
+        options.addOption(Option.builder("m").
+                hasArg(true).
+                longOpt("mutationfiles").
+                required(true).
+                desc("CSV file with mutation patterns.").build());
+        options.addOption(Option.builder("d").
+                hasArg(true).
+                longOpt("drugnames").
+                required(true).
+                desc("Drug name.").build());
+        options.addOption(Option.builder("r").
+                hasArg(true).
+                longOpt("references").
+                required(true).
+                desc("Reference sequence FASTA file.").build());
+        options.addOption(Option.builder("p").
+                hasArg(true).
+                longOpt("patientseqs").
+                required(true).
+                desc("FASTA file with patient sequences.").build());
+        CommandLineParser parser = new DefaultParser();
+        CommandLine cli;
         try {
-            return parser.parse(options, args);
+            cli = parser.parse(options, args);
         } catch (ParseException e) {
-            // fehlt eine Pflicht-Option > Hilfe ausgeben > null zurückgeben
+            System.out.println("Error: " + e.getMessage());
+            HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("HIVDiagnostics", options);
             return null;
         }
+        return cli;
     }
 
     public static void main(String[] args) {
+
     }
 }
